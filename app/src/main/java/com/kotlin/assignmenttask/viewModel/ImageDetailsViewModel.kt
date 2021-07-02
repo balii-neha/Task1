@@ -14,7 +14,7 @@ import retrofit2.Response
 import java.io.IOException
 
 class ImageDetailsViewModel (application: Application, val repoistoryClass: RepoistoryClass) :
-    ViewModel() {
+        AndroidViewModel(application) {
 
     val mutableLiveData=MutableLiveData<Event<Resource<ImageDetail>>>()
     val liveData: LiveData<Event<Resource<ImageDetail>>> = mutableLiveData
@@ -26,13 +26,12 @@ class ImageDetailsViewModel (application: Application, val repoistoryClass: Repo
     private suspend fun createUser (){
         mutableLiveData.postValue(Event(Resource.Loading()))
         try {
-            if (Utils.hasInternetConnection(MyApplication())) {
+            if (Utils.hasInternetConnection(getApplication<MyApplication>())) {
                 val response = repoistoryClass.getImagesList()
-
-                    mutableLiveData.postValue(handlePicsResponse(response))
+                mutableLiveData.postValue(handlePicsResponse(response))
 
             } else {
-                mutableLiveData.postValue(Event(Resource.Error(MyApplication().getString(
+                mutableLiveData.postValue(Event(Resource.Error(getApplication<MyApplication>().getString(
                         R.string.no_internet_connection))))
             }
         }  catch (t: Throwable) {
@@ -40,14 +39,14 @@ class ImageDetailsViewModel (application: Application, val repoistoryClass: Repo
                 is IOException -> {
                     mutableLiveData.postValue(
                             Event(Resource.Error(
-                                  " No Internet connection. Please retry"
+                                    "No Internet connection.Please retry"
                             ))
                     )
                 }
                 else -> {
                     mutableLiveData.postValue(
                             Event(Resource.Error(
-                                    "conversion control"
+                                    "conversion control ......"
                             ))
 
 
